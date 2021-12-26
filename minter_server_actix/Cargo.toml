@@ -1,0 +1,38 @@
+[package]
+name = "minter_server_actix"
+version = "0.1.0"
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+actix-web = "3.3.2"
+actix-multipart = "0.3"
+
+futures-util = "0.3"
+sanitize-filename = "0.2"
+uuid = { version = "0.8", features = ["v4"] }
+
+image = "0.23.14"
+
+anchor-lang = "0.18.0"
+anchor-client = "0.18.0"
+anchor-spl = { version = "0.18.0"}
+anyhow = "1.0"
+clap = "2.33.3"
+solana-program = "1.7.11"
+solana-sdk = "1.7.11"
+spl-token = { version = "3.1.1", features = ["no-entrypoint"] }
+shellexpand = "2.1.0"
+spl-associated-token-account = { version = "1.0.2", features = ["no-entrypoint"] }
+solana-client = "1.7.11"
+safe-transmute = "0.11.0"
+bytemuck = { version = "1.4.0" }
+futures = "0.3"
+metaplex-token-metadata = "0.0.1"
+
+[dev-dependencies]
+assert_matches = "1.5.0"
+solana-program-test = "1.7.8"
+bytemuck = { version = "1.4.0" }
+rand = "0.7.3"
