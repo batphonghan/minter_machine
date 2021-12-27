@@ -5,6 +5,7 @@ use anchor_lang::prelude::*;
 use anchor_lang::InstructionData;
 use anchor_lang::ToAccountMetas;
 use anyhow::Result;
+use clap::ArgMatches;
 use solana_client::rpc_client::RpcClient;
 use solana_client::rpc_config::RpcSendTransactionConfig;
 use solana_program::{instruction::Instruction, pubkey::Pubkey};
@@ -25,11 +26,21 @@ use metaplex_token_metadata::{
     },
 };
 
-pub async fn init_and_mint_to_dest(
+pub fn init_and_mint_to_dest(
     minter: &Keypair,
     dest_pubkey: &Pubkey,
+    matches: ArgMatches,
     rpc_client: RpcClient,
 ) -> Result<Pubkey> {
+    let uri = matches.value_of("uri").unwrap();
+    println!("Value for URI: {}", &uri);
+
+    let name = matches.value_of("name").unwrap();
+    println!("Value for name: {}", &name);
+
+    let symbol = matches.value_of("symbol").unwrap();
+    println!("Value for symbol: {}", &symbol);
+
     let token_mint_account_rent =
         rpc_client.get_minimum_balance_for_rent_exemption(spl_token::state::Mint::LEN as usize)?;
 
@@ -48,10 +59,6 @@ pub async fn init_and_mint_to_dest(
         ntf_pubkey.as_ref(),
     ];
     let (metadata_key, _) = Pubkey::find_program_address(metadata_seeds, &program_key);
-
-    let name = "NFT 2";
-    let symbol = "BPHT";
-    let uri = "https://bafkreiavdj5p2rkz2f2dre7wvrq4ljuii632qpgwhvs5egq2dgmsxqbc24.ipfs.dweb.link/";
 
     println!("NFT TOKEN: {} for {} ", ntf_pubkey, dest_pubkey);
     println!("metadata_key {}", metadata_key);

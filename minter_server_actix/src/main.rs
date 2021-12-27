@@ -62,8 +62,8 @@ fn index() -> HttpResponse {
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    mint_nft().await.unwrap_or_else(|e| panic!("{:?}", e));
-    return Ok(());
+    // mint_nft().await.unwrap_or_else(|e| panic!("{:?}", e));
+    // return Ok(());
 
     HttpServer::new(|| {
         App::new().wrap(middleware::Logger::default()).service(
@@ -95,6 +95,18 @@ pub async fn mint_nft() -> anyhow::Result<Pubkey> {
                 .default_value("/Users/batphonghan/.config/solana/id.json"),
         )
         .arg(
+            clap::Arg::with_name("uri")
+                .short("u")
+                .long("uri")
+                .default_value(""),
+        )
+        .arg(clap::Arg::with_name("name").long("name").default_value(""))
+        .arg(
+            clap::Arg::with_name("symbol")
+                .long("symbol")
+                .default_value(""),
+        )
+        .arg(
             clap::Arg::with_name("cluster")
                 .short("c")
                 .long("cluster")
@@ -104,7 +116,7 @@ pub async fn mint_nft() -> anyhow::Result<Pubkey> {
             clap::Arg::with_name("destination")
                 .short("d")
                 .long("destination-wallet")
-                .default_value("Bu3NdkmMed7r4adaNuXwkHdSGhPqWGjCDpnirzAHgoF9"),
+                .default_value(""),
         )
         .get_matches();
 
@@ -119,6 +131,7 @@ pub async fn mint_nft() -> anyhow::Result<Pubkey> {
 
     let program_id = matches.value_of("program_id").unwrap();
     println!("Value for program ID: {}", program_id);
+
     let program_id = Pubkey::from_str(program_id).unwrap();
 
     std::env::set_var("RUST_LOG", "info");
@@ -134,7 +147,7 @@ pub async fn mint_nft() -> anyhow::Result<Pubkey> {
 
     let dest_pubkey = Pubkey::from_str(destination).unwrap();
     let nft_pubkey =
-        mint_token::init_and_mint_to_dest(&minter, &dest_pubkey, program_client.rpc()).await?;
+        mint_token::init_and_mint_to_dest(&minter, &dest_pubkey, matches, program_client.rpc())?;
 
     Ok(nft_pubkey)
 }
